@@ -1,0 +1,256 @@
+# Tailwind CSS v4.0 Documentation for LLMs
+
+## Overview
+Tailwind CSS v4.0 is a utility-first CSS framework leveraging modern CSS features like OKLCH colors, cascade layers, @property, and color-mix(). It uses a CSS-first configuration with the `@theme` directive, eliminating the need for `tailwind.config.js`. Builds are up to 5x faster for full builds and 100x faster for incremental builds, measured in microseconds. All utilities are generated from theme variables, accessible as CSS custom properties (e.g., `var(--color-brand-500)`).
+
+## Installation
+- **Requirements**: Modern browsers (Safari 16.4+, Chrome 111+, Firefox 128+). Node.js and npm for CLI usage.
+- **Steps**:
+  1. Install via npm: `npm install tailwindcss @tailwindcss/cli`
+  2. Add Tailwind to your CSS:
+     ```css
+     @import "tailwindcss";
+     ```
+  3. Build CSS: `npx @tailwindcss/cli -i input.css -o output.css`
+  4. Include in HTML:
+     ```html
+     <link href="./output.css" rel="stylesheet">
+     ```
+- **Vite Plugin**:
+  ```bash
+  npm install @tailwindcss/vite
+  ```
+  Configure in `vite.config.js`:
+  ```javascript
+  import tailwindcss from '@tailwindcss/vite'
+  export default { plugins: [tailwindcss()] }
+  ```
+
+## Configuration
+- **CSS-First Configuration**:
+  ```css
+  @import "tailwindcss";
+  @theme {
+    --font-sans: "Inter", system-ui, sans-serif;
+    --color-brand-500: oklch(0.637 0.237 25.331);
+    --breakpoint-lg: 64rem;
+    --spacing: 0.25rem;
+  }
+  ```
+- **Automatic Content Detection**: Scans template files automatically, ignoring `.gitignore` and binary files.
+- **Custom Source Files**:
+  ```css
+  @source "./src/**/*.{html,js,jsx,ts,tsx}";
+  ```
+- **Disable Default Theme**:
+  ```css
+  @theme {
+    --*: initial;
+    --color-lagoon: oklch(0.72 0.11 221.19);
+    --font-body: Inter, sans-serif;
+  }
+  ```
+
+## Base Styles
+Tailwind applies minimal base styles to normalize HTML elements across browsers, using `@layer base`:
+- **Reset**: Applies `box-sizing: border-box`, removes default margins/paddings, and sets consistent font rendering.
+- **Typography**: Sets `font-family: var(--font-sans)`, `line-height: var(--leading-normal)`, and enables font smoothing.
+- **Elements**:
+  - `<html>`: `scroll-behavior: smooth`
+  - `<body>`: `background: var(--color-background)`, `color: var(--color-foreground)`
+  - `<a>`: `text-decoration: underline`, `color: var(--color-link)`
+  - `<img>`: `max-width: 100%`, `height: auto`
+- **Customization**:
+  ```css
+  @layer base {
+    h1 { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); }
+  }
+  ```
+
+## Layout Utilities
+Utilities for controlling element positioning, display, and sizing, derived from theme variables.
+
+### Display
+- **Classes**: `block`, `inline-block`, `inline`, `flex`, `inline-flex`, `grid`, `inline-grid`, `table`, `inline-table`, `none`
+- **Example**: `<div class="flex">` sets `display: flex`
+
+### Position
+- **Classes**: `static`, `relative`, `absolute`, `fixed`, `sticky`
+- **Example**: `<div class="absolute top-0 left-0">` sets `position: absolute; top: 0; left: 0`
+
+### Box Sizing
+- **Classes**: `box-border`, `box-content`
+- **Example**: `<div class="box-border">` sets `box-sizing: border-box`
+
+### Width and Height
+- **Classes**: `w-{size}`, `h-{size}` (e.g., `w-full`, `w-1/2`, `h-4`, `h-screen`)
+- **Sizes**: From `--width-*` and `--height-*` theme variables (e.g., `w-4` uses `var(--width-4)`).
+- **Example**: `<div class="w-full h-64">` sets `width: 100%; height: 16rem`
+
+### Padding and Margin
+- **Classes**: `p-{size}`, `m-{size}`, `pt-{size}`, `pr-{size}`, etc. (e.g., `p-4`, `mx-auto`)
+- **Sizes**: From `--spacing-*` (e.g., `p-2` uses `var(--spacing-2)`).
+- **Example**: `<div class="p-4 m-auto">` sets `padding: 1rem; margin: auto`
+
+### Container
+- **Class**: `container`
+- **Behavior**: Centers content with responsive max-widths from `--breakpoint-*` (e.g., `--breakpoint-md: 48rem`).
+- **Example**: `<div class="container mx-auto">`
+
+## Flexbox Utilities
+Controls Flexbox layouts using theme-derived properties.
+
+### Flex Container
+- **Classes**: `flex`, `inline-flex`
+- **Flex Direction**: `flex-row`, `flex-row-reverse`, `flex-col`, `flex-col-reverse`
+- **Wrap**: `flex-wrap`, `flex-wrap-reverse`, `flex-nowrap`
+- **Example**: `<div class="flex flex-row flex-wrap">`
+
+### Flex Items
+- **Flex**: `flex-1`, `flex-auto`, `flex-initial`, `flex-none`
+- **Grow/Shrink**: `grow`, `grow-0`, `shrink`, `shrink-0`
+- **Order**: `order-{n}` (e.g., `order-1`, `order-first`, `order-last`)
+- **Example**: `<div class="flex"><div class="flex-1">Item 1</div><div class="flex-2">Item 2</div></div>`
+
+### Justify Content
+- **Classes**: `justify-start`, `justify-end`, `justify-center`, `justify-between`, `justify-around`, `justify-evenly`
+- **Example**: `<div class="flex justify-between">`
+
+### Align Items
+- **Classes**: `items-start`, `items-end`, `items-center`, `items-baseline`, `items-stretch`
+- **Example**: `<div class="flex items-center">`
+
+### Align Self
+- **Classes**: `self-auto`, `self-start`, `self-end`, `self-center`, `self-stretch`
+- **Example**: `<div class="self-center">`
+
+## Grid Utilities
+Controls CSS Grid layouts with theme-driven values.
+
+### Grid Container
+- **Classes**: `grid`, `inline-grid`
+- **Columns**: `grid-cols-{n}` (e.g., `grid-cols-3` uses `--grid-cols-3`)
+- **Rows**: `grid-rows-{n}` (e.g., `grid-rows-2`)
+- **Example**: `<div class="grid grid-cols-3 grid-rows-2">`
+
+### Grid Items
+- **Column Span**: `col-span-{n}`, `col-start-{n}`, `col-end-{n}` (e.g., `col-span-2`)
+- **Row Span**: `row-span-{n}`, `row-start-{n}`, `row-end-{n}`
+- **Example**: `<div class="grid"><div class="col-span-2">Item</div></div>`
+
+### Gap
+- **Classes**: `gap-{size}`, `gap-x-{size}`, `gap-y-{size}` (e.g., `gap-4` uses `--spacing-4`)
+- **Example**: `<div class="grid gap-4">`
+
+### Justify and Align
+- **Justify Content**: `justify-items-start`, `justify-items-center`, etc.
+- **Align Content**: `content-start`, `content-center`, etc.
+- **Example**: `<div class="grid justify-items-center content-center">`
+
+## Typography Utilities
+Controls text styling with theme variables.
+
+### Font Family
+- **Classes**: `font-sans`, `font-serif`, `font-mono`
+- **Example**: `<p class="font-sans">` uses `var(--font-sans)`
+
+### Font Size
+- **Classes**: `text-{size}` (e.g., `text-sm`, `text-3xl` from `--font-size-*`)
+- **Example**: `<h1 class="text-4xl">`
+
+### Font Weight
+- **Classes**: `font-{weight}` (e.g., `font-bold`, `font-medium` from `--font-weight-*`)
+- **Example**: `<p class="font-bold">`
+
+### Line Height
+- **Classes**: `leading-{size}` (e.g., `leading-tight`, `leading-6` from `--leading-*`)
+- **Example**: `<p class="leading-relaxed">`
+
+### Text Color
+- **Classes**: `text-{color}` (e.g., `text-brand-500` from `--color-brand-500`)
+- **Example**: `<p class="text-lagoon">`
+
+### Text Shadow (v4.1)
+- **Classes**: `text-shadow-{size}` (e.g., `text-shadow-2xs`, `text-shadow-lg`)
+- **Example**: `<h1 class="text-shadow-md">`
+
+### Overflow-Wrap (v4.1)
+- **Classes**: `wrap-break-word`, `wrap-anywhere`, `wrap-normal`
+- **Example**: `<p class="wrap-break-word">`
+
+## Background Utilities
+Controls background styling.
+
+### Background Color
+- **Classes**: `bg-{color}` (e.g., `bg-brand-500` from `--color-brand-500`)
+- **Example**: `<div class="bg-lagoon">`
+
+### Background Image
+- **Classes**: `bg-none`, `bg-gradient-to-{direction}` (e.g., `bg-gradient-to-r`)
+- **Example**: `<div class="bg-gradient-to-r from-brand-500 to-brand-700">`
+
+## Border Utilities
+Controls borders and outlines.
+
+### Border Width
+- **Classes**: `border-{size}` (e.g., `border-2` from `--border-width-*`)
+- **Example**: `<div class="border-2">`
+
+### Border Color
+- **Classes**: `border-{color}` (e.g., `border-brand-500`)
+- **Example**: `<button class="border-brand-500">`
+
+### Border Radius
+- **Classes**: `rounded-{size}` (e.g., `rounded-md`, `rounded-full` from `--radius-*`)
+- **Example**: `<div class="rounded-lg">`
+
+## Masking Utilities (v4.1)
+- **Classes**: `mask-{type}` (e.g., `mask-circle`, `mask-gradient`)
+- **Example**: `<img class="mask-circle">`
+
+## Custom Utilities and Variants
+- **Custom Utility**:
+  ```css
+  @utility tab-* { tab-size: --value(--tab-size-*); }
+  @theme { --tab-size-2: 2; --tab-size-4: 4; }
+  ```
+  Usage: `<pre class="tab-4">`
+- **Custom Variant**:
+  ```css
+  @custom-variant theme-midnight { &:where([data-theme="midnight"] *) { @slot; } }
+  ```
+  Usage: `<div class="theme-midnight:bg-black">`
+
+## Responsive Design
+- **Breakpoints**: Use `--breakpoint-*` (e.g., `sm:`, `md:`, `lg:` for `--breakpoint-sm`, etc.).
+- **Example**: `<div class="text-base md:text-lg">` applies `font-size: var(--font-size-base)` at base, `var(--font-size-lg)` at medium breakpoint.
+
+## Example Usage
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./output.css" rel="stylesheet">
+</head>
+<body class="font-sans bg-lagoon flex flex-col items-center p-4">
+  <h1 class="text-3xl font-bold text-dusk text-shadow-md md:text-4xl">Welcome</h1>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-brand-500 p-4 rounded-lg">Item 1</div>
+    <div class="bg-brand-600 p-4 rounded-lg col-span-2">Item 2</div>
+  </div>
+  <button class="theme-midnight:bg-black px-4 py-2 border-2 border-brand-500">Click Me</button>
+</body>
+</html>
+```
+
+## Browser Compatibility
+- Supports modern browsers with fallbacks in v4.1 for older browsers (e.g., Safari 15).
+- OKLCH colors and text shadows degrade gracefully in older browsers.
+
+## Resources
+- Official Docs: https://tailwindcss.com/docs
+- Theme Variables: https://tailwindcss.com/docs/theme-variables
+- Browser Support: https://tailwindcss.com/docs/browser-support
+- Upgrade Guide: `npx @tailwindcss/upgrade`
